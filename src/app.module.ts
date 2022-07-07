@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TimeClock } from './time-clock/entities/time-clock.entity';
 import { TimeClockModule } from './time-clock/time-clock.module';
+import { PointRegisterModule } from './point-register/point-register.module';
 
 
 @Module({
@@ -15,7 +16,8 @@ import { TimeClockModule } from './time-clock/time-clock.module';
       autoLoadModels: true,
       models: [TimeClock],
     }),
-    TimeClockModule
+    TimeClockModule,
+    PointRegisterModule
   ],
   controllers: [AppController],
   providers: [AppService],
