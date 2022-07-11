@@ -22,6 +22,27 @@ export class PointRegisterService {
 
    async findAll() {
     const timeClock = await this.timeClokModel.findAll()
+    
+    fs.access('/home/william/www/clp-ponto/5042.txt', fs.constants.F_OK, (err) => {
+
+      fs.unlink('/home/william/www/clp-ponto/5042.txt', (err) => {
+        if (err) {
+          console.log("Erro ao deletar arquivo 5042.txt : ", err)
+        }
+
+        console.log("Arquivo 5042.txt deletado")
+      })
+      if (err) {
+        fs.writeFile("5042.txt", '', (err) => {
+          if (err) {
+            console.log("Erro ao criar arquivo 5042.txt : ", err)
+          }
+        })
+      } else {
+        console.log('o Arquivo 5042.txt ja existe!')
+      }
+
+    })
 
     const api = axios;
 
@@ -39,8 +60,6 @@ export class PointRegisterService {
 
       const { session } = login.data
 
-      console.log(session)
-
       const urlAFD = `https://${ips}/get_afd.fcgi`
 
       const afd = await api.post(urlAFD, {
@@ -52,25 +71,24 @@ export class PointRegisterService {
         }
       })
       
-      console.log("AFD ------->", afd.data)
+      const contentAfd = afd.data
 
-    })
+      console.log(contentAfd.length[25])
 
-  
+      const maxLength = contentAfd.length
+      
 
+      fs.appendFile('5042.txt', contentAfd, (err) => {
+        if (err) {
+          throw err;
+        }
 
-
-
-
-    //Verificar se o arquivo 5042.txt ja foi criado caso não criar o arquivo
-    fs.writeFile("5042.txt", '', (err) => {
-      if (err) throw err;
-      console.log("Arquivo criado")
+        console.log("conteudo adicionado")
+      })
     })
 
     const res = 'ok'
 
-    // criar adição de conteudo no arquivo 5042.txt para cada relógio ponto cadastrado
     return res
 
   }
