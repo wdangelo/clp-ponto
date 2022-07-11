@@ -14,7 +14,7 @@ export class PointRegisterService {
     @InjectModel(TimeClock)
     private timeClokModel: typeof TimeClock
     ) {}
-  
+    
 
   create(createPointRegisterDto: CreatePointRegisterDto) {
     return 'This action adds a new pointRegister';
@@ -25,33 +25,34 @@ export class PointRegisterService {
 
     const api = axios;
 
-    for (let item in timeClock) {
-      console.log(timeClock[item].ip)
-    }
-
     timeClock.forEach(async (item) => {
 
-      // let ip = item.ip
-      
-      // const login =  await api.post(`https://${ip}/get_afd.fcgi`, {
-      //   login: "admin",
-      //   password: "admin"
-      // })
+      const ips = item.ip
 
-      // const session = login.data.session
+      const urlLogin = `https://${ips}/login.fcgi`
+      console.log(urlLogin)
+    
+      const login = await api.post(urlLogin, {
+        login: "admin",
+        password: "admin"
+      })
 
-      // console.log(session)
+      const { session } = login.data
+
+      console.log(session)
+
+      const urlAFD = `https://${ips}/get_afd.fcgi`
+
+      const afd = await api.post(urlAFD, {
+        session: session,
+        initial_date: {
+           day: 11,
+           month: 7,
+           year: 2022
+        }
+      })
       
-      // const afd = await api.post(`https://${ip}/get_afd.fcgi`, {
-      //   session: session,
-      //   initial_date: {
-      //      day: 7,
-      //      month: 7,
-      //      year: 2022
-      //   }
-      // })
-      
-      // console.log("AFD ------->",afd)
+      console.log("AFD ------->", afd.data)
 
     })
 
