@@ -50,6 +50,7 @@ export class PointRegisterService {
 
       const ips = item.ip
 
+      //testar se o ip esta acessivel caso não esteja passar para o proximo da lista
       const urlLogin = `https://${ips}/login.fcgi`
       console.log(urlLogin)
     
@@ -71,16 +72,16 @@ export class PointRegisterService {
         }
       })
       
-      const contentAfd = afd.data
+      const content = afd.data
 
-      console.log(contentAfd.length[25])
-
-      const maxLength = contentAfd.length
+      const maxLength = content.length
       
+      const contentAfd = content.substr(0, maxLength - 26)
+      console.log(contentAfd)
 
       fs.appendFile('5042.txt', contentAfd, (err) => {
         if (err) {
-          throw err;
+          console.log("Erro ao adicionar conteudo para o arquivo 5042.txt");
         }
 
         console.log("conteudo adicionado")
