@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
 import  * as fs from "fs";
+import * as tcpp from 'tcp-ping';
 import { TimeClock } from 'src/time-clock/entities/time-clock.entity';
 import { CreatePointRegisterDto } from './dto/create-point-register.dto';
 import { UpdatePointRegisterDto } from './dto/update-point-register.dto';
@@ -49,43 +50,52 @@ export class PointRegisterService {
     timeClock.forEach(async (item) => {
 
       const ips = item.ip
+      const urlLogin = `https://${ips}/login.fcgi`
 
       //testar se o ip esta acessivel caso não esteja passar para o proximo da lista
-      const urlLogin = `https://${ips}/login.fcgi`
-      console.log(urlLogin)
+
+      tcpp.probe(ips, 80, async (err, available) => {
+
+        if(available === true){
+          console.log(`o ip: ${ips} esta acssivel`)
+          const login = await api.post(urlLogin, {
+            login: "admin",
+            password: "admin"
+          })
     
-      const login = await api.post(urlLogin, {
-        login: "admin",
-        password: "admin"
-      })
-
-      const { session } = login.data
-
-      const urlAFD = `https://${ips}/get_afd.fcgi`
-
-      const afd = await api.post(urlAFD, {
-        session: session,
-        initial_date: {
-           day: 11,
-           month: 7,
-           year: 2022
+          const { session } = login.data
+    
+          const urlAFD = `https://${ips}/get_afd.fcgi`
+    
+          const afd = await api.post(urlAFD, {
+            session: session,
+            initial_date: {
+               day: 11,
+               month: 7,
+               year: 2022
+            }
+          })
+          
+          const content = afd.data
+    
+          const maxLength = content.length
+          
+          const contentAfd = content.substr(0, maxLength - 26)
+              
+          fs.appendFile('5042.txt', contentAfd, (err) => {
+            if (err) {
+              console.log("Erro ao adicionar conteudo para o arquivo 5042.txt");
+            }
+    
+            console.log("conteudo adicionado")
+          })
         }
       })
+
+    
       
-      const content = afd.data
+          
 
-      const maxLength = content.length
-      
-      const contentAfd = content.substr(0, maxLength - 26)
-      console.log(contentAfd)
-
-      fs.appendFile('5042.txt', contentAfd, (err) => {
-        if (err) {
-          console.log("Erro ao adicionar conteudo para o arquivo 5042.txt");
-        }
-
-        console.log("conteudo adicionado")
-      })
     })
 
     const res = 'ok'
