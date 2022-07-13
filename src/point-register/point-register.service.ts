@@ -24,9 +24,9 @@ export class PointRegisterService {
    async findAll() {
     const timeClock = await this.timeClokModel.findAll()
     
-    fs.access('/home/william/www/clp-ponto/5042.txt', fs.constants.F_OK, (err) => {
+    fs.access('/home/william/www/clp-ponto/temp/afd/5042.txt', fs.constants.F_OK, (err) => {
 
-      fs.unlink('/home/william/www/clp-ponto/5042.txt', (err) => {
+      fs.unlink('/home/william/www/clp-ponto/temp/afd/5042.txt', (err) => {
         if (err) {
           console.log("Erro ao deletar arquivo 5042.txt : ", err)
         }
@@ -82,7 +82,7 @@ export class PointRegisterService {
           
           const contentAfd = content.substr(0, maxLength - 26)
               
-          fs.appendFile('5042.txt', contentAfd, (err) => {
+          fs.appendFile('/home/william/www/clp-ponto/temp/afd/5042.txt', contentAfd, (err) => {
             if (err) {
               console.log("Erro ao adicionar conteudo para o arquivo 5042.txt");
             }
