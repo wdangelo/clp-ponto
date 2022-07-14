@@ -2,18 +2,20 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
-import  * as fs from "fs";
 import * as tcpp from 'tcp-ping';
 import { TimeClock } from 'src/time-clock/entities/time-clock.entity';
 import { CreatePointRegisterDto } from './dto/create-point-register.dto';
 import { UpdatePointRegisterDto } from './dto/update-point-register.dto';
+import { File } from 'src/utils/file';
 
+const file = new File();
 
 @Injectable()
 export class PointRegisterService {
+  
   constructor(
     @InjectModel(TimeClock)
-    private timeClokModel: typeof TimeClock
+    private timeClokModel: typeof TimeClock,
     ) {}
     
 
@@ -22,42 +24,28 @@ export class PointRegisterService {
   }
 
    async findAll() {
-    const timeClock = await this.timeClokModel.findAll()
-    
-    fs.access('/home/william/www/clp-ponto/temp/afd/5042.txt', fs.constants.F_OK, (err) => {
-
-      fs.unlink('/home/william/www/clp-ponto/temp/afd/5042.txt', (err) => {
-        if (err) {
-          console.log("Erro ao deletar arquivo 5042.txt : ", err)
-        }
-
-        console.log("Arquivo 5042.txt deletado")
-      })
-      if (err) {
-        fs.writeFile("5042.txt", '', (err) => {
-          if (err) {
-            console.log("Erro ao criar arquivo 5042.txt : ", err)
-          }
-        })
-      } else {
-        console.log('o Arquivo 5042.txt ja existe!')
-      }
-
-    })
 
     const api = axios;
+
+    const timeClock = await this.timeClokModel.findAll()
+
+    file.delete('/home/william/www/clp-ponto/temp/afd/', '5042.txt')
+
+    file.create('/home/william/www/clp-ponto/temp/afd/', '5042.txt')
 
     timeClock.forEach(async (item) => {
 
       const ips = item.ip
       const urlLogin = `https://${ips}/login.fcgi`
+      console.log(ips)
 
       //testar se o ip esta acessivel caso não esteja passar para o proximo da lista
 
       tcpp.probe(ips, 80, async (err, available) => {
-
         if(available === true){
+
           console.log(`o ip: ${ips} esta acssivel`)
+          
           const login = await api.post(urlLogin, {
             login: "admin",
             password: "admin"
@@ -70,7 +58,7 @@ export class PointRegisterService {
           const afd = await api.post(urlAFD, {
             session: session,
             initial_date: {
-               day: 11,
+               day: 14,
                month: 7,
                year: 2022
             }
@@ -81,20 +69,13 @@ export class PointRegisterService {
           const maxLength = content.length
           
           const contentAfd = content.substr(0, maxLength - 26)
-              
-          fs.appendFile('/home/william/www/clp-ponto/temp/afd/5042.txt', contentAfd, (err) => {
-            if (err) {
-              console.log("Erro ao adicionar conteudo para o arquivo 5042.txt");
-            }
-    
-            console.log("conteudo adicionado")
-          })
-        }
-      })
 
-    
-      
-          
+          file.append('/home/william/www/clp-ponto/temp/afd/5042.txt', '5042.txt', contentAfd)
+              
+        }else {
+          console.log(`O ip ${ips} não esta acessivel`)
+        }
+      })   
 
     })
 
