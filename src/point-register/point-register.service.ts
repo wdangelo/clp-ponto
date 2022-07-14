@@ -7,6 +7,7 @@ import { TimeClock } from 'src/time-clock/entities/time-clock.entity';
 import { CreatePointRegisterDto } from './dto/create-point-register.dto';
 import { UpdatePointRegisterDto } from './dto/update-point-register.dto';
 import { File } from 'src/utils/file';
+import { ipTest } from 'src/utils/ipTest';
 
 const file = new File();
 
@@ -39,8 +40,7 @@ export class PointRegisterService {
       const urlLogin = `https://${ips}/login.fcgi`
       console.log(ips)
 
-      //testar se o ip esta acessivel caso não esteja passar para o proximo da lista
-
+      
       tcpp.probe(ips, 80, async (err, available) => {
         if(available === true){
 
@@ -70,7 +70,7 @@ export class PointRegisterService {
           
           const contentAfd = content.substr(0, maxLength - 26)
 
-          file.append('/home/william/www/clp-ponto/temp/afd/5042.txt', '5042.txt', contentAfd)
+          file.append('/home/william/www/clp-ponto/temp/afd/', '5042.txt', contentAfd)
               
         }else {
           console.log(`O ip ${ips} não esta acessivel`)

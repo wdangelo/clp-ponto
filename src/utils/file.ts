@@ -19,9 +19,9 @@ async create(filepath: string,  filename: string) {
   fs.access(filepath + filename, fs.constants.F_OK, (err) => {
 
     if (err) {
-      fs.writeFile("/home/william/www/clp-ponto/temp/afd/5042.txt", '', (error) => {
+      fs.writeFile(filepath + filename, '', (err) => {
         if (err) {
-          console.log("Erro ao criar arquivo 5042.txt : ", error)
+          console.log("Erro ao criar arquivo 5042.txt : ", err)
         }
       })
     } 
