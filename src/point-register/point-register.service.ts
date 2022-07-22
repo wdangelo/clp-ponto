@@ -7,10 +7,10 @@ import { TimeClock } from 'src/time-clock/entities/time-clock.entity';
 import { CreatePointRegisterDto } from './dto/create-point-register.dto';
 import { UpdatePointRegisterDto } from './dto/update-point-register.dto';
 import { File } from 'src/utils/file';
-import { ipTest } from 'src/utils/ipTest';
+import { SftpConnect } from 'src/utils/sftp';
 
 const file = new File();
-
+const sftpConnect = new SftpConnect();
 @Injectable()
 export class PointRegisterService {
   
@@ -44,7 +44,7 @@ export class PointRegisterService {
       tcpp.probe(ips, 80, async (err, available) => {
         if(available === true){
 
-          console.log(`o ip: ${ips} esta acssivel`)
+          console.log(`o ip: ${ips} esta acessivel`)
           
           const login = await api.post(urlLogin, {
             login: "admin",
@@ -79,7 +79,10 @@ export class PointRegisterService {
 
     })
 
+    
+    sftpConnect.sftpPut()
     const res = 'ok'
+
 
     return res
 

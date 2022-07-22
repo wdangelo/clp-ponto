@@ -5,9 +5,12 @@ export function ipTest(ip: string) {
     tcpp.probe(ip, 80, async (err, available) => {
 
         
-        if (available === true) {
-            return true
+        if (err) {
+            console.log(err)
+            return
         }
+
+        return
         
     })
 }
