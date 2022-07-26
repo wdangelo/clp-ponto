@@ -1,4 +1,5 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+import * as schedule from 'node-schedule'
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import axios from 'axios';
@@ -8,8 +9,17 @@ import { CreatePointRegisterDto } from './dto/create-point-register.dto';
 import { UpdatePointRegisterDto } from './dto/update-point-register.dto';
 import { File } from 'src/utils/file';
 import { SftpConnect } from 'src/utils/sftp';
+import * as dayjs from 'dayjs';
+import 'dotenv/config'
+
 
 const file = new File();
+
+const day = dayjs(new Date()).subtract(10, 'days').format('D');
+const daynumber: number = +day;
+const month = dayjs(new Date()).format('M');
+const monthNumber: number = +month;
+
 const sftpConnect = new SftpConnect();
 @Injectable()
 export class PointRegisterService {
@@ -34,53 +44,70 @@ export class PointRegisterService {
 
     file.create('/home/william/www/clp-ponto/temp/afd/', '5042.txt')
 
-    timeClock.forEach(async (item) => {
+    const rule = new schedule.RecurrenceRule();
+    
+    rule.hour = 15
+    rule.minute = 35
 
-      const ips = item.ip
-      const urlLogin = `https://${ips}/login.fcgi`
-      console.log(ips)
+    schedule.scheduleJob(rule, ( ) => {
+      console.log('Coletando dados')
+      timeClock.forEach(async (item) => {
 
+        const ips = item.ip
+        const urlLogin = `https://${ips}/login.fcgi`
+        console.log(ips)
+  
+        
+        tcpp.probe(ips, 80, async (err, available) => {
+          if(available === true){
+  
+            console.log(`o ip: ${ips} esta acessivel`)
+            //colocar dados restritos no .dotenv
+            const login = await api.post(urlLogin, {
+              login: process.env.SMTP_USER,
+              password: process.env.SMTP_PASS
+            })
       
-      tcpp.probe(ips, 80, async (err, available) => {
-        if(available === true){
+            const { session } = login.data
+      
+            const urlAFD = `https://${ips}/get_afd.fcgi`
 
-          console.log(`o ip: ${ips} esta acessivel`)
-          
-          const login = await api.post(urlLogin, {
-            login: "admin",
-            password: "admin"
-          })
-    
-          const { session } = login.data
-    
-          const urlAFD = `https://${ips}/get_afd.fcgi`
-    
-          const afd = await api.post(urlAFD, {
-            session: session,
-            initial_date: {
-               day: 14,
-               month: 7,
-               year: 2022
-            }
-          })
-          
-          const content = afd.data
-    
-          const maxLength = content.length
-          
-          const contentAfd = content.substr(0, maxLength - 26)
-
-          file.append('/home/william/www/clp-ponto/temp/afd/', '5042.txt', contentAfd)
-              
-        }else {
-          console.log(`O ip ${ips} não esta acessivel`)
-        }
-      })   
-
+            const afd = await api.post(urlAFD, {
+              session: session,
+              initial_date: {
+                 day: daynumber,
+                 month: monthNumber,
+                 year: 2022
+              }
+            })
+            
+            const content = afd.data
+      
+            const maxLength = content.length
+            
+            const contentAfd = content.substr(0, maxLength - 26)
+  
+            file.append('/home/william/www/clp-ponto/temp/afd/', '5042.txt', contentAfd)
+                
+          }else {
+            console.log(`O ip ${ips} não esta acessivel`)
+          }
+        })   
+  
+      })
     })
 
+
+    const time = new schedule.RecurrenceRule();
     
-    sftpConnect.sftpPut()
+    time.hour = 15
+    time.minute = 37
+
+    schedule.scheduleJob(time, () => {
+      console.log(`enviando SFTP`)
+      sftpConnect.sftpPut()
+    })
+    
     const res = 'ok'
 
 
