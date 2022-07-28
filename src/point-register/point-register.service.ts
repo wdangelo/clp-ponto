@@ -57,19 +57,19 @@ export class PointRegisterService {
         const urlLogin = `https://${ips}/login.fcgi`
         console.log(ips)
   
-        
+        //Desacoplar teste de ips
         tcpp.probe(ips, 80, async (err, available) => {
           if(available === true){
   
             console.log(`o ip: ${ips} esta acessivel`)
-            //colocar dados restritos no .dotenv
+            
             const login = await api.post(urlLogin, {
               login: process.env.SMTP_USER,
               password: process.env.SMTP_PASS
             })
       
             const { session } = login.data
-      
+            
             const urlAFD = `https://${ips}/get_afd.fcgi`
 
             const afd = await api.post(urlAFD, {

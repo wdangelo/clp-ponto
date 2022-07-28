@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { TimeClock } from './time-clock/entities/time-clock.entity';
 import { TimeClockModule } from './time-clock/time-clock.module';
 import { PointRegisterModule } from './point-register/point-register.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 
 @Module({
@@ -17,7 +18,8 @@ import { PointRegisterModule } from './point-register/point-register.module';
       models: [TimeClock],
     }),
     TimeClockModule,
-    PointRegisterModule
+    PointRegisterModule,
+    AccountsModule
   ],
   controllers: [AppController],
   providers: [AppService],
