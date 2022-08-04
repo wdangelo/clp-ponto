@@ -1,4 +1,4 @@
-import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { Column, DataType, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 
 @Table({
     tableName: "accounts"
@@ -18,9 +18,11 @@ export class Account extends Model {
     @Column({allowNull: false, type: DataType.BOOLEAN})
     isAdmin: boolean;
 
+    @Unique
     @Column({allowNull: false, type: DataType.STRING})
     cpf: string;
 
+    @Unique
     @Column({allowNull: false, type: DataType.STRING})
     pis: string
 

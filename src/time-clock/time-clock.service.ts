@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { OPEN_READWRITE } from 'sqlite3';
 import { CreateTimeClockDto } from './dto/create-time-clock.dto';
 import { UpdateTimeClockDto } from './dto/update-time-clock.dto';
 import { TimeClock } from './entities/time-clock.entity';
@@ -13,12 +12,16 @@ export class TimeClockService {
     private timeClokModel: typeof TimeClock
   ) {}
 
-  create(createTimeClockDto: CreateTimeClockDto) {
-    return  this.timeClokModel.create({
+  async create(createTimeClockDto: CreateTimeClockDto) {
+    await this.timeClokModel.create({
       pa: createTimeClockDto.pa,
       name: createTimeClockDto.name,
       ip: createTimeClockDto.ip
-    })
+    }).catch((err) => {
+      if(err) {
+        throw new HttpException('PA already exists', HttpStatus.FORBIDDEN)
+      }
+    });
   }
 
   findAll() {
@@ -41,6 +44,6 @@ export class TimeClockService {
 
   async remove(id: string) {
     const timeClock = await this.timeClokModel.findByPk(id)
-    timeClock.destroy
+    timeClock.destroy();
   }
 }

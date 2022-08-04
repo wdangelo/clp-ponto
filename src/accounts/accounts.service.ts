@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize-typescript';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
@@ -13,18 +14,24 @@ export class AccountsService {
   ){}
 
   async create(createAccountDto: CreateAccountDto) {
-    return this.accountsModel.create({
-      name: createAccountDto.name,
-      email: createAccountDto.email,
-      isAdmin: createAccountDto.isAdmin,
-      cpf: createAccountDto.cpf,
-      pis: createAccountDto.pis,
-      password: createAccountDto.password,
-    });
+    await this.accountsModel.create({
+        name: createAccountDto.name,
+        email: createAccountDto.email,
+        isAdmin: createAccountDto.isAdmin,
+        cpf: createAccountDto.cpf,
+        pis: createAccountDto.pis,
+        password: createAccountDto.password,
+      }).catch((err) => {
+        if(err) {
+          throw new HttpException('User already exists', HttpStatus.FORBIDDEN)
+        }
+      });
+
+  
   }
 
-  findAll() {
-    return this.accountsModel.findAll();
+  async findAll() {
+    return await this.accountsModel.findAll();
   }
 
   async findOne(id: string) {
@@ -33,6 +40,7 @@ export class AccountsService {
 
   async update(id: string, updateAccountDto: UpdateAccountDto) {
     const account =  await this.accountsModel.findByPk(id)
+
     account.update({
       name: updateAccountDto.name,
       email: updateAccountDto.email,
@@ -44,8 +52,9 @@ export class AccountsService {
      
   }
 
-  async remove(id: number) {
-    const account =  await this.accountsModel.findByPk(id)
-    account.destroy
+  async remove(id: string) {
+    const acc =  await this.accountsModel.findByPk(id)
+    acc.destroy();
+    return   
   }
 }

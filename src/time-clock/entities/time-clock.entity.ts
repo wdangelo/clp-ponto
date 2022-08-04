@@ -1,4 +1,4 @@
-import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { Column, DataType, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 
 @Table({
     tableName: "time-clock"
@@ -14,6 +14,7 @@ export class TimeClock extends Model {
     @Column({allowNull: false, type: DataType.STRING})
     name: string;
 
+    @Unique
     @Column({allowNull: false, type: DataType.STRING})
     ip: string
 }
