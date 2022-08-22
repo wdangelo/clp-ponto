@@ -11,7 +11,7 @@
 
   [ x ] Remover usuáro
 
-  [ ] Update de usuário (name, email, cpf, password, )
+  [ x ] Update de usuário (name, email, cpf, password, )
 
   [ x ] Não pode ser possivel criar um novo usuário com CPF e PIS ja cadastrados 
 
@@ -43,3 +43,13 @@
 # e-mail
 
   [ ] Criar envio de e-mail para caso ocorra algum erro na coleta do arquivo ou envio para destino SFTP
+
+
+# Containers
+
+  [ ] Criar estrutura com docker e docker compose
+  [ ] Criar container postgres
+
+# Database
+
+  [ ] Migrar estrutura para sqlite para postgress (typeorm ou Prisma)
