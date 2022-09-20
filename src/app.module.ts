@@ -7,6 +7,7 @@ import { TimeClock } from './time-clock/entities/time-clock.entity';
 import { TimeClockModule } from './time-clock/time-clock.module';
 import { PointRegisterModule } from './point-register/point-register.module';
 import { AccountsModule } from './accounts/accounts.module';
+import { SessionModule } from './session/session.module';
 
 
 @Module({
@@ -19,7 +20,8 @@ import { AccountsModule } from './accounts/accounts.module';
     }),
     TimeClockModule,
     PointRegisterModule,
-    AccountsModule
+    AccountsModule,
+    SessionModule
   ],
   controllers: [AppController],
   providers: [AppService],
