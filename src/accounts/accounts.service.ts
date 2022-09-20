@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { hash } from "bcrypt";
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -14,13 +15,14 @@ export class AccountsService {
   ){}
 
   async create(createAccountDto: CreateAccountDto) {
+    const passwordHash = await hash(createAccountDto.password, 8)
     await this.accountsModel.create({
         name: createAccountDto.name,
         email: createAccountDto.email,
         isAdmin: createAccountDto.isAdmin,
         cpf: createAccountDto.cpf,
         pis: createAccountDto.pis,
-        password: createAccountDto.password,
+        password: passwordHash,
       }).catch((err) => {
         if(err) {
           throw new HttpException('User already exists', HttpStatus.FORBIDDEN)

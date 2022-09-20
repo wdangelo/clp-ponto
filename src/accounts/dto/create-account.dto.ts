@@ -23,6 +23,7 @@ export class CreateAccountDto {
     password: string;
 
     constructor() {
+        
         if (!this.isAdmin) {
             this.isAdmin = false
         }
