@@ -1,1 +1,5 @@
-export class CreateSessionDto {}
+export class CreateSessionDto {
+    user_id: string;
+    expires_date: Date;
+    refresh_token: string;
+}
