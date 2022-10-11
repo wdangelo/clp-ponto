@@ -3,7 +3,7 @@
 
   [ x ] Usuário cadastrado deve ter os seguintes campos(id, nome, e-mail, cpf, password, PIS)
 
-  [ ] Criar session através e autenticação com refresh Token
+  [ x ] Criar session através e autenticação com refresh Token
 
   [ x ] Listar todos os usuário
 
@@ -14,6 +14,10 @@
   [ x ] Update de usuário (name, email, cpf, password, )
 
   [ x ] Não pode ser possivel criar um novo usuário com CPF e PIS ja cadastrados 
+
+  [ ] Criar testes de users
+
+  [ ] Criar testes de session
 
 
 # Point register
