@@ -1,9 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
+import { verify } from "jsonwebtoken";
 import { hash } from "bcrypt";
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
+import auth from 'src/config/auth';
+
+interface IPayload {
+  sub: string;
+}
 
 @Injectable()
 export class AccountsService {
@@ -12,6 +18,7 @@ export class AccountsService {
     @InjectModel(Account)
     private accountsModel: typeof Account
   ){}
+
 
   async create(createAccountDto: CreateAccountDto) {
     const passwordHash = await hash(createAccountDto.password, 8)

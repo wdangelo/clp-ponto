@@ -7,6 +7,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe( { errorHttpStatusCode: 422 } ));
   
-  await app.listen(3300);
+  
+  await app.listen(3000);
 }
 bootstrap();

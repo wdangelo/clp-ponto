@@ -85,8 +85,8 @@ export class SessionService {
     return `This action returns all session`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} session`;
+  findOne(id: string) {
+    return this.sessionModel.findByPk(id)
   }
 
   update(id: number, updateSessionDto: UpdateSessionDto) {
