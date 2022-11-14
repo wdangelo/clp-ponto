@@ -15,7 +15,9 @@
 
   [ x ] Não pode ser possivel criar um novo usuário com CPF e PIS ja cadastrados 
 
-  [ ] Criar testes de users
+  [ ] Criar tratamento de Erros
+
+  [ ] Criar testes de accounts
 
   [ ] Criar testes de session
 
