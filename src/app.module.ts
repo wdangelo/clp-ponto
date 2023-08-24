@@ -31,6 +31,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
     .apply(EnsureAutjenticated)
-    .forRoutes({ path: 'accounts', method: RequestMethod.POST})
+    .forRoutes({ path: 'time-clock', method: RequestMethod.POST})
   }
 }
+// export class AppModule {}

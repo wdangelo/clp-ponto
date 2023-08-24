@@ -19,9 +19,10 @@ export class AccountsService {
     private accountsModel: typeof Account
   ){}
 
-
   async create(createAccountDto: CreateAccountDto) {
     const passwordHash = await hash(createAccountDto.password, 8)
+
+
     await this.accountsModel.create({
         name: createAccountDto.name,
         email: createAccountDto.email,
@@ -29,11 +30,7 @@ export class AccountsService {
         cpf: createAccountDto.cpf,
         pis: createAccountDto.pis,
         password: passwordHash,
-      }).catch((err) => {
-        if(err) {
-          throw new HttpException('User already exists', HttpStatus.FORBIDDEN)
-        }
-      });
+      })
 
   
   }

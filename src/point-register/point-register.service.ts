@@ -64,8 +64,8 @@ export class PointRegisterService {
             console.log(`o ip: ${ips} esta acessivel`)
             
             const login = await api.post(urlLogin, {
-              login: process.env.SMTP_USER,
-              password: process.env.SMTP_PASS
+              login: process.env.CLOCK_USER,
+              password: process.env.CLOCK_PASS
             })
       
             const { session } = login.data
